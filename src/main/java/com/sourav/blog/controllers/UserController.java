@@ -19,6 +19,8 @@ import com.sourav.blog.payloads.ApiResponse;
 import com.sourav.blog.payloads.UserDTO;
 import com.sourav.blog.services.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -41,7 +43,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/")
-	public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+	public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
 		
 		UserDTO updatedUserDTO = this.userService.createUser(userDTO);
 		
@@ -50,7 +52,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/{userId}") 
-	public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO, @PathVariable Integer userId) {
+	public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO, @PathVariable Integer userId) {
 		
 		UserDTO updatedUserDTO = this.userService.updateUser(userDTO, userId);
 		

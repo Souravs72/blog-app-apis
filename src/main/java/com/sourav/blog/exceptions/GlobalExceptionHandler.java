@@ -1,10 +1,15 @@
 package com.sourav.blog.exceptions;
 
+import java.io.ObjectInputStream.GetField; 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -24,6 +29,23 @@ public class GlobalExceptionHandler {
 		ApiResponse apiResponse = new ApiResponse(message, false, date);
 		
 		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<Map<String, String>> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException exception) {
+		
+		Map<String, String> response = new HashMap<String, String>();
+		 exception.getBindingResult().getAllErrors().forEach((error) -> {
+			String fieldName = ((FieldError)error).getField();
+			String message = error.getDefaultMessage();
+			response.put(fieldName, message);
+		});
+		String pattern = "MM-dd-yyyy HH:mm:ss";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		String date = simpleDateFormat.format(new Date());
+		
+		
+		return new ResponseEntity<Map<String, String>>(response, HttpStatus.BAD_REQUEST);
 	}
 	
 	
