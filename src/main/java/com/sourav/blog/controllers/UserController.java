@@ -73,13 +73,3 @@ public class UserController {
 
 	
 }
-/*
-//echo "# blog-app-apis" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/Souravs72/blog-app-apis.git
-git push -u origin main
-
-*/
