@@ -1,8 +1,6 @@
 package com.sourav.blog.services;
 
-import java.util.List;
-
-import com.sourav.blog.entities.Post;
+import java.util.List; 
 import com.sourav.blog.payloads.PostDTO;
 import com.sourav.blog.payloads.PostResponse;
 
@@ -23,15 +21,15 @@ public interface PostService {
 	PostDTO getPostById(Integer postId);
 	
 	// getAll
-	PostResponse getAllPosts(Integer pageNumber, Integer pageSize);
+	PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String SortDir);
 	
 	
 	//get all posts by user
-	List<PostDTO> getPostsByUser(Integer userId);
+	PostResponse getPostsByUser(Integer userId, Integer pageNumber, Integer pageSize, String sortBy, String SortDir);
 	
 	
 	//get all posts by user
-	List<PostDTO> getPostsByCategory(Integer categoryId);
+	PostResponse getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize, String sortBy, String SortDir);
 	
 	//search posts
 	List<PostDTO> searchPosts(String keyword);

@@ -1,6 +1,6 @@
 package com.sourav.blog.services.impl;
 
-import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat; 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.sourav.blog.entities.Category;
@@ -91,9 +92,11 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public PostResponse getAllPosts(Integer pageNumber, Integer pageSize) {
+	public PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
 		
-		Pageable pageable = PageRequest.of(pageNumber, pageSize);
+		Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+		
+		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 		Page<Post> pagePost = this.postRepository.findAll(pageable);
 		List<Post> allPosts = pagePost.getContent();
 		List<PostDTO> postDTOs = allPosts.stream().map((post) -> this.modelMapper.map(post, PostDTO.class))
@@ -112,26 +115,50 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<PostDTO> getPostsByUser(Integer userId) {
+	public PostResponse getPostsByUser(Integer userId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+		
+		Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+		
+		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 		User user = this.userRepository.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "User Id", userId));
-		List<Post> posts = this.postRepository.findByUser(user);
+		Page<Post> pagePost = this.postRepository.findByUser(user, pageable);
+		List<Post> posts = pagePost.getContent();
 		List<PostDTO> postDTOs = posts.stream().map((post) -> this.modelMapper.map(post, PostDTO.class))
 				.collect(Collectors.toList());
-
-		return postDTOs;
+		PostResponse postResponse = new PostResponse();
+		postResponse.setContent(postDTOs);
+		postResponse.setPageNumber(pagePost.getNumber());
+		postResponse.setPageSize(pagePost.getSize());
+		postResponse.setTotalElements(pagePost.getTotalElements());
+		postResponse.setTotalPages(pagePost.getTotalPages());
+		postResponse.setLastPage(pagePost.isLast());
+		
+		return postResponse;
 	}
 
 	@Override
-	public List<PostDTO> getPostsByCategory(Integer categoryId) {
-
+	public PostResponse getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+		
+		Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+		
+		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 		Category category = this.categoryRepository.findById(categoryId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category", "Category Id", categoryId));
-		List<Post> posts = this.postRepository.findByCategory(category);
+		Page<Post> pagePost = this.postRepository.findByCategory(category, pageable);
+		List<Post> posts = pagePost.getContent();
 		List<PostDTO> postDTOs = posts.stream().map((post) -> this.modelMapper.map(post, PostDTO.class))
 				.collect(Collectors.toList());
-
-		return postDTOs;
+		
+		PostResponse postResponse = new PostResponse();
+		postResponse.setContent(postDTOs);
+		postResponse.setPageNumber(pagePost.getNumber());
+		postResponse.setPageSize(pagePost.getSize());
+		postResponse.setTotalElements(pagePost.getTotalElements());
+		postResponse.setTotalPages(pagePost.getTotalPages());
+		postResponse.setLastPage(pagePost.isLast());
+		
+		return postResponse;
 	}
 
 	@Override
