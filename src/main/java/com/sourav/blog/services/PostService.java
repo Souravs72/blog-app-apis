@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.sourav.blog.entities.Post;
 import com.sourav.blog.payloads.PostDTO;
+import com.sourav.blog.payloads.PostResponse;
 
 public interface PostService {
 	
@@ -22,7 +23,7 @@ public interface PostService {
 	PostDTO getPostById(Integer postId);
 	
 	// getAll
-	List<PostDTO> getAllPosts(Integer pageNumber, Integer pageSize);
+	PostResponse getAllPosts(Integer pageNumber, Integer pageSize);
 	
 	
 	//get all posts by user

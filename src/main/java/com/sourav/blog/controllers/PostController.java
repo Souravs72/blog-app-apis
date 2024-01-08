@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sourav.blog.payloads.ApiResponse;
 import com.sourav.blog.payloads.PostDTO;
+import com.sourav.blog.payloads.PostResponse;
 import com.sourav.blog.services.PostService;
 
 @RestController
@@ -70,12 +71,13 @@ public class PostController {
 
 	// get all posts
 	@GetMapping("/posts")
-	public ResponseEntity<List<PostDTO>> getAllPosts(
+	public ResponseEntity<PostResponse> getAllPosts(
 			@RequestParam(value = "pageNumber", defaultValue = "0", required = false)Integer pageNumber, 
 			@RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
-
-		List<PostDTO> allPosts = this.postService.getAllPosts(pageNumber, pageSize);
-		return new ResponseEntity<List<PostDTO>>(allPosts, HttpStatus.OK);
+		
+		PostResponse postResponse = this.postService.getAllPosts(pageNumber, pageSize);
+		
+		return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
 	}
 
 	// get Posts By User
