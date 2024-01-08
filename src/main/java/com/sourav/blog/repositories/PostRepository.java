@@ -14,4 +14,5 @@ import com.sourav.blog.entities.Category;
 public interface PostRepository extends JpaRepository<Post, Integer>{
 	Page<Post> findByUser(User user, Pageable pageable);
 	Page<Post> findByCategory(Category category, Pageable pageable);
+	List<Post> findByTitleContaining(String title);
 }

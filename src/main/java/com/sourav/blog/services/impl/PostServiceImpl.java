@@ -1,6 +1,6 @@
 package com.sourav.blog.services.impl;
 
-import java.text.SimpleDateFormat; 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,19 +29,32 @@ public class PostServiceImpl implements PostService {
 
 	@Autowired
 	private PostRepository postRepository;
+	
 	@Autowired
 	private ModelMapper modelMapper;
+	
 	@Autowired
 	private UserRepository userRepository;
+	
 	@Autowired
 	private CategoryRepository categoryRepository;
 
-	
 	String pattern = "MM-dd-yyyy HH:mm:ss";
 	SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 	String date = simpleDateFormat.format(new Date());
-	
-	
+
+	static PostResponse getPostResponse(List<PostDTO> postDTOs, Page<Post> pagePost) {
+		PostResponse postResponse = new PostResponse();
+		postResponse.setContent(postDTOs);
+		postResponse.setPageNumber(pagePost.getNumber());
+		postResponse.setPageSize(pagePost.getSize());
+		postResponse.setTotalElements(pagePost.getTotalElements());
+		postResponse.setTotalPages(pagePost.getTotalPages());
+		postResponse.setLastPage(pagePost.isLast());
+
+		return postResponse;
+	}
+
 	@Override
 	public PostDTO createPost(PostDTO postDTO, Integer userId, Integer categoryId) {
 
@@ -51,7 +64,7 @@ public class PostServiceImpl implements PostService {
 				.orElseThrow(() -> new ResourceNotFoundException("Category", "Category Id", categoryId));
 		Post post = this.modelMapper.map(postDTO, Post.class);
 		post.setImageName("default.png");
-		
+
 		post.setAddedDate(new Date());
 		post.setUser(user);
 		post.setCategory(category);
@@ -67,10 +80,10 @@ public class PostServiceImpl implements PostService {
 				.orElseThrow(() -> new ResourceNotFoundException("Post", "Post id", postId));
 		post.setTitle(postDTO.getTitle());
 		post.setContent(postDTO.getContent());
-		
+
 		post.setAddedDate(new Date());
 		post.setImageName(postDTO.getImageName());
-		
+
 		Post updatedPost = this.postRepository.save(post);
 		return this.modelMapper.map(updatedPost, PostDTO.class);
 	}
@@ -93,32 +106,26 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
-		
+
 		Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-		
+
 		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 		Page<Post> pagePost = this.postRepository.findAll(pageable);
 		List<Post> allPosts = pagePost.getContent();
 		List<PostDTO> postDTOs = allPosts.stream().map((post) -> this.modelMapper.map(post, PostDTO.class))
 				.collect(Collectors.toList());
-		
-		PostResponse postResponse = new PostResponse();
-		postResponse.setContent(postDTOs);
-		postResponse.setPageNumber(pagePost.getNumber());
-		postResponse.setPageSize(pagePost.getSize());
-		postResponse.setTotalElements(pagePost.getTotalElements());
-		postResponse.setTotalPages(pagePost.getTotalPages());
-		postResponse.setLastPage(pagePost.isLast());
-		
-		
+
+		PostResponse postResponse = getPostResponse(postDTOs, pagePost);
+
 		return postResponse;
 	}
 
 	@Override
-	public PostResponse getPostsByUser(Integer userId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
-		
+	public PostResponse getPostsByUser(Integer userId, Integer pageNumber, Integer pageSize, String sortBy,
+			String sortDir) {
+
 		Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-		
+
 		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 		User user = this.userRepository.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "User Id", userId));
@@ -126,22 +133,17 @@ public class PostServiceImpl implements PostService {
 		List<Post> posts = pagePost.getContent();
 		List<PostDTO> postDTOs = posts.stream().map((post) -> this.modelMapper.map(post, PostDTO.class))
 				.collect(Collectors.toList());
-		PostResponse postResponse = new PostResponse();
-		postResponse.setContent(postDTOs);
-		postResponse.setPageNumber(pagePost.getNumber());
-		postResponse.setPageSize(pagePost.getSize());
-		postResponse.setTotalElements(pagePost.getTotalElements());
-		postResponse.setTotalPages(pagePost.getTotalPages());
-		postResponse.setLastPage(pagePost.isLast());
-		
+		PostResponse postResponse = getPostResponse(postDTOs, pagePost);
+
 		return postResponse;
 	}
 
 	@Override
-	public PostResponse getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
-		
+	public PostResponse getPostsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize, String sortBy,
+			String sortDir) {
+
 		Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-		
+
 		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 		Category category = this.categoryRepository.findById(categoryId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category", "Category Id", categoryId));
@@ -149,22 +151,19 @@ public class PostServiceImpl implements PostService {
 		List<Post> posts = pagePost.getContent();
 		List<PostDTO> postDTOs = posts.stream().map((post) -> this.modelMapper.map(post, PostDTO.class))
 				.collect(Collectors.toList());
-		
-		PostResponse postResponse = new PostResponse();
-		postResponse.setContent(postDTOs);
-		postResponse.setPageNumber(pagePost.getNumber());
-		postResponse.setPageSize(pagePost.getSize());
-		postResponse.setTotalElements(pagePost.getTotalElements());
-		postResponse.setTotalPages(pagePost.getTotalPages());
-		postResponse.setLastPage(pagePost.isLast());
-		
+
+		PostResponse postResponse = getPostResponse(postDTOs, pagePost);
+
 		return postResponse;
 	}
 
 	@Override
 	public List<PostDTO> searchPosts(String keyword) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
+		List<Post> posts = this.postRepository.findByTitleContaining(keyword);
+		List<PostDTO> postDTOs = posts.stream().map((post) -> this.modelMapper.map(post, PostDTO.class))
+				.collect(Collectors.toList());
+
+		return postDTOs;
+	}
 }

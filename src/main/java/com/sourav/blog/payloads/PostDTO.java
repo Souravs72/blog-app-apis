@@ -1,7 +1,9 @@
 package com.sourav.blog.payloads;
 
+import java.util.ArrayList; 
 import java.util.Date;
 
+import com.sourav.blog.entities.Comment;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,6 @@ public class PostDTO {
 	
 	private int postId;
 	
-	
 	@NotBlank
 	private String title;
 	
@@ -26,6 +27,8 @@ public class PostDTO {
 	private String imageName;
 	private CategoryDTO category;
 	private UserDTO user;
+	
+	private ArrayList<Comment> comments = new ArrayList<>();
 	
 	
 }
