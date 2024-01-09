@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.sourav.blog.entities.Comment;
 import com.sourav.blog.entities.Post;
+import com.sourav.blog.entities.User;
 import com.sourav.blog.exceptions.ResourceNotFoundException;
 import com.sourav.blog.payloads.CommentDTO;
 import com.sourav.blog.repositories.CommentRepository;
 import com.sourav.blog.repositories.PostRepository;
+import com.sourav.blog.repositories.UserRepository;
 import com.sourav.blog.services.CommentService;
 
 
@@ -25,16 +27,21 @@ public class CommentServiceImpl implements CommentService {
 	private PostRepository postRepository;
 	
 	@Autowired
-	private ModelMapper modelMapper;
+	private UserRepository userRepository;
 	
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@Override
-	public CommentDTO createComment(CommentDTO commentDTO, Integer postId) {
+	public CommentDTO createComment(CommentDTO commentDTO, Integer userId, Integer postId) {
 		
 		Post post = this.postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "post id", postId));
+		User user = this.userRepository.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException("User", "User Id", userId));
 		Comment comment =  this.modelMapper.map(commentDTO, Comment.class);
 		comment.setAddedDate(new Date());
 		comment.setPost(post);
+		comment.setUser(user);
 		
 		Comment createdComment = this.commentRepository.save(comment);
 		

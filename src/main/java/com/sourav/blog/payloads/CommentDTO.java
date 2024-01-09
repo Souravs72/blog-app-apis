@@ -16,5 +16,6 @@ public class CommentDTO {
 	private String content;
 	private Date addedDate;
 	
+	private UserDTO user;
 	
 }
