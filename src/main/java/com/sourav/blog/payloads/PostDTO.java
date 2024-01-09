@@ -1,7 +1,8 @@
 package com.sourav.blog.payloads;
-
-import java.util.ArrayList; 
+ 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.sourav.blog.entities.Comment;
 import jakarta.validation.constraints.NotBlank;
@@ -25,10 +26,11 @@ public class PostDTO {
 	private Date addedDate;
 	
 	private String imageName;
+	
 	private CategoryDTO category;
 	private UserDTO user;
 	
-	private ArrayList<Comment> comments = new ArrayList<>();
+	private Set<CommentDTO> comments = new HashSet<>();
 	
 	
 }
