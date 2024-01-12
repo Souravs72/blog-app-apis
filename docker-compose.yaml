@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  database:
+    image: mysql:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MYSQL_DATABASE: '${MYSQL_DATABASE}'
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
+      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
+      MYSQL_USER: '${MYSQL_USER}'
+    ports:
+      - "3307:3306"
+    volumes:
+      - db-data:/var/lib/db
+    networks:
+      - spring-net
+      
+  api_service:
+    build: .
+    depends_on:
+      - database
+    environment:
+      - spring.datasource.url=jdbc:mysql://mysqldb:3306/blog_app_apis?createDatabaseIfNotExist=true
+      - spring.datasource.username=root
+      - spring.datasource.password=root
+    ports:
+      - 8081:80
+    networks:
+      - spring-net
+
+volumes:
+  db-data:
+
+networks:
+  spring-net:
+    driver: bridge

@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 		User user = this.userRepository.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User",
 								"id", userId));
-		
+
 		user.setId(userDTO.getId());
 		user.setName(userDTO.getName());
 		user.setEmail(userDTO.getEmail());
@@ -73,23 +73,10 @@ public class UserServiceImpl implements UserService {
 	
 	private User dtoToUser(UserDTO userDTO) {
 		
-//		User user = new User();
-//		user.setId(userDTO.getId());
-//		user.setName(userDTO.getName());
-//		user.setEmail(userDTO.getEmail());
-//		user.setAbout(userDTO.getAbout());
-//		user.setPassword(userDTO.getPassword());
-		
 		User user = this.modelMapper.map(userDTO, User.class);
 		return user;
 	}
 	private UserDTO userToDto(User user) {
-//		UserDTO userDTO = new UserDTO();
-//		userDTO.setId(user.getId());
-//		userDTO.setName(user.getName());
-//		userDTO.setEmail(user.getEmail());
-//		userDTO.setAbout(user.getAbout());
-//		userDTO.setPassword(user.getPassword());
 		
 		UserDTO userDTO = this.modelMapper.map(user, UserDTO.class);
 		return userDTO;

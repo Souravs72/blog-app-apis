@@ -1,10 +1,8 @@
 package com.sourav.blog.exceptions;
 
-import java.io.ObjectInputStream.GetField; 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,11 +37,7 @@ public class GlobalExceptionHandler {
 			String fieldName = ((FieldError)error).getField();
 			String message = error.getDefaultMessage();
 			response.put(fieldName, message);
-		});
-		String pattern = "MM-dd-yyyy HH:mm:ss";
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-		String date = simpleDateFormat.format(new Date());
-		
+		});		
 		
 		return new ResponseEntity<Map<String, String>>(response, HttpStatus.BAD_REQUEST);
 	}
