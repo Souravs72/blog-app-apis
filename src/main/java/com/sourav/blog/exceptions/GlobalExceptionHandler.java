@@ -1,6 +1,6 @@
 package com.sourav.blog.exceptions;
 
-import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat; 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +40,19 @@ public class GlobalExceptionHandler {
 		});		
 		
 		return new ResponseEntity<Map<String, String>>(response, HttpStatus.BAD_REQUEST);
-	}
+	}	
 	
+	@ExceptionHandler(ApiException.class)
+	public ResponseEntity<ApiResponse> resourceNotFoundExceptionHandler(ApiException exception) {
+		
+		String message = exception.getMessage();
+		String pattern = "MM-dd-yyyy HH:mm:ss";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		String date = simpleDateFormat.format(new Date());
+		
+		ApiResponse apiResponse = new ApiResponse(message, true, date);
+		
+		return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.BAD_REQUEST);
+	}
 	
 }

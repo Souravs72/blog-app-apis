@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +47,7 @@ public class PostController {
 	private String path;
 
 	// create
+	@PreAuthorize("hasRole('USER')")
 	@PostMapping("/user/{userId}/category/{categoryId}/posts")
 	public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO postDTO, @PathVariable Integer userId,
 			@PathVariable Integer categoryId) {
@@ -56,6 +58,7 @@ public class PostController {
 	}
 
 	// update
+	@PreAuthorize("hasRole('USER')")
 	@PutMapping("/posts/{postId}")
 	public ResponseEntity<PostDTO> updatePost(@RequestBody PostDTO postDTO, @PathVariable Integer postId) {
 
@@ -65,6 +68,7 @@ public class PostController {
 	}
 
 	// delete
+	@PreAuthorize("hasRole('USER')")
 	@DeleteMapping("/posts/{postId}")
 	public ResponseEntity<ApiResponse> deletePost(@PathVariable Integer postId) {
 
@@ -79,6 +83,7 @@ public class PostController {
 	}
 
 	// get Posts by Id
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/posts/{postId}")
 	public ResponseEntity<PostDTO> getPost(@PathVariable Integer postId) {
 		PostDTO post = this.postService.getPostById(postId);
@@ -87,6 +92,7 @@ public class PostController {
 	}
 
 	// get all posts
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/posts")
 	public ResponseEntity<PostResponse> getAllPosts(
 			@RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
@@ -100,6 +106,7 @@ public class PostController {
 	}
 
 	// get Posts By User
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/user/{userId}/posts")
 	public ResponseEntity<PostResponse> getPostByUser(
 			@RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
@@ -114,6 +121,7 @@ public class PostController {
 	}
 
 	// get posts ByCategory
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/category/{categoryId}/posts")
 	public ResponseEntity<PostResponse> getPostByCategory(
 			@RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
@@ -128,6 +136,7 @@ public class PostController {
 	}
 
 	// search
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/posts/search/{keywords}")
 	public ResponseEntity<List<PostDTO>> searchPostsByTitle(@PathVariable String keywords) {
 
@@ -136,6 +145,7 @@ public class PostController {
 	}
 
 	// post image upload
+	@PreAuthorize("hasRole('USER')")
 	@PostMapping("/posts/image/upload/{postId}")
 	public ResponseEntity<PostDTO> uploadImage(@RequestParam("image") MultipartFile image, @PathVariable Integer postId)
 			throws IOException {
@@ -149,6 +159,7 @@ public class PostController {
 	}
 	
 	//post image download
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping(value = "posts/image/{imageName}", produces = MediaType.IMAGE_JPEG_VALUE)
 	public void downloadPostImage(@PathVariable String imageName, HttpServletResponse response) throws IOException {
 		

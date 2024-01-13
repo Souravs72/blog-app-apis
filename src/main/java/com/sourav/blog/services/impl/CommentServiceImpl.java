@@ -1,9 +1,9 @@
 package com.sourav.blog.services.impl;
 
-import java.util.Date;  
+import java.util.Date;
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sourav.blog.entities.Comment;
@@ -16,20 +16,16 @@ import com.sourav.blog.repositories.PostRepository;
 import com.sourav.blog.repositories.UserRepository;
 import com.sourav.blog.services.CommentService;
 
+import lombok.RequiredArgsConstructor;
+
 
 @Service
+@RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 	
-	@Autowired
 	private CommentRepository commentRepository;
-	
-	@Autowired
 	private PostRepository postRepository;
-	
-	@Autowired
 	private UserRepository userRepository;
-	
-	@Autowired
 	private ModelMapper modelMapper;
 
 	@Override
@@ -74,6 +70,12 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public CommentDTO getCommentsByUser(Integer userId, Integer pageNumber, Integer pageSize, String sortBy,
 			String SortDir) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<CommentDTO> getAllComments() {
 		// TODO Auto-generated method stub
 		return null;
 	}

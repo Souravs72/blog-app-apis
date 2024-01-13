@@ -1,6 +1,6 @@
 package com.sourav.blog.repositories;
 
-import java.util.Optional; 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.sourav.blog.entities.User;
 

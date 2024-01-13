@@ -1,14 +1,18 @@
 package com.sourav.blog.controllers;
 
-import java.text.SimpleDateFormat; 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +21,8 @@ import com.sourav.blog.payloads.ApiResponse;
 import com.sourav.blog.payloads.CommentDTO;
 import com.sourav.blog.services.CommentService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
 public class CommentController {
@@ -24,14 +30,16 @@ public class CommentController {
 	@Autowired
 	private CommentService commentService;
 
+	@PreAuthorize("hasRole('USER')")
 	@PostMapping("/post/{postId}/user/{userId}/comments")
 	public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO, @PathVariable Integer postId,
 			@PathVariable Integer userId) {
-		
+
 		CommentDTO createComment = this.commentService.createComment(commentDTO, userId, postId);
 		return new ResponseEntity<CommentDTO>(createComment, HttpStatus.CREATED);
 	}
 
+	@PreAuthorize("hasRole('USER')")
 	@DeleteMapping("/comments/{commentId}")
 	public ResponseEntity<ApiResponse> deleteComment(@PathVariable Integer commentId) {
 
@@ -42,6 +50,24 @@ public class CommentController {
 
 		return new ResponseEntity<ApiResponse>(new ApiResponse("Comment is deleted successfully", true, date),
 				HttpStatus.OK);
+	}
+
+	@PreAuthorize("hasRole('USER')")
+	@PutMapping("/{commentId}")
+	public ResponseEntity<CommentDTO> updateComment(@Valid @RequestBody CommentDTO commentDTO,
+			@PathVariable Integer commentId) {
+		CommentDTO updatedDto = this.commentService.updateComment(commentDTO, commentId);
+
+		return new ResponseEntity<CommentDTO>(updatedDto, HttpStatus.OK);
+	}
+
+	// get all
+	@PreAuthorize("hasRole('USER')")
+	@GetMapping("/")
+	public ResponseEntity<List<CommentDTO>> getAllComments() {
+		List<CommentDTO> commentDTOs = this.commentService.getAllComments();
+
+		return ResponseEntity.ok(commentDTOs);
 	}
 
 }

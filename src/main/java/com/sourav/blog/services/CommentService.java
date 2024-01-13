@@ -1,5 +1,7 @@
 package com.sourav.blog.services;
 
+import java.util.List;
+
 import com.sourav.blog.payloads.CommentDTO;
 
 public interface CommentService {
@@ -17,5 +19,7 @@ public interface CommentService {
 	
 	// get all Comments by user
 	CommentDTO getCommentsByUser(Integer userId, Integer pageNumber, Integer pageSize, String sortBy, String SortDir);
+
+	List<CommentDTO> getAllComments();
 
 }
