@@ -64,6 +64,7 @@ public class CategoryController {
 	
 	
 	//get
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	@GetMapping("/{categoryId}")
 	public ResponseEntity<CategoryDTO> getCategory(@PathVariable Integer categoryId) {
 		CategoryDTO categoryDTO = this.categoryService.getCategoryDTO(categoryId);

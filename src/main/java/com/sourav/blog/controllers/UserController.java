@@ -1,6 +1,6 @@
 package com.sourav.blog.controllers;
 
-import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat; 
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,33 +18,34 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sourav.blog.payloads.ApiResponse;
 import com.sourav.blog.payloads.UserDTO;
+import com.sourav.blog.repositories.RoleRepository;
 import com.sourav.blog.services.UserService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
 	 
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
 	
-	
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	@GetMapping("/")
 	public ResponseEntity<List<UserDTO>> getAllUsers() {
 		
 		return ResponseEntity.ok(this.userService.getAllUsers());
 	}
 	
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	@GetMapping("/{userId}")
 	public ResponseEntity<UserDTO> getUser(@PathVariable Integer userId) {
 		
 		return ResponseEntity.ok(this.userService.getUserById(userId));
 	}
 	
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	@PostMapping("/")
 	public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
 		
@@ -54,7 +55,7 @@ public class UserController {
 		return new ResponseEntity<UserDTO>(updatedUserDTO, HttpStatus.CREATED);
 	}
 	
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	@PutMapping("/{userId}") 
 	public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO, @PathVariable Integer userId) {
 		
@@ -68,7 +69,6 @@ public class UserController {
 	public ResponseEntity<ApiResponse> deleteUser(@PathVariable Integer userId) {
 		
 		this.userService.deleteUser(userId);
-		
 		
 //		String pattern = "MM-dd-yyyy HH:mm:ss.SSSZ";
 		String pattern = "MM-dd-yyyy HH:mm:ss";

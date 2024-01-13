@@ -1,26 +1,33 @@
 package com.sourav.blog.services.impl;
 
-import java.util.List; 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.sourav.blog.config.AppConstants;
+import com.sourav.blog.entities.Role;
 import com.sourav.blog.entities.User;
 import com.sourav.blog.payloads.UserDTO;
+import com.sourav.blog.repositories.RoleRepository;
 import com.sourav.blog.repositories.UserRepository;
 import com.sourav.blog.services.UserService;
+
+import lombok.RequiredArgsConstructor;
+
 import com.sourav.blog.exceptions.*;
 
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 	
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
-	private ModelMapper modelMapper;
+	private final UserRepository userRepository;
+	private final ModelMapper modelMapper;
+	private final PasswordEncoder passwordEncoder;
+	private final RoleRepository roleRepositories;
 	
 	@Override
 	public UserDTO createUser(UserDTO userDto) {
@@ -80,5 +87,15 @@ public class UserServiceImpl implements UserService {
 		
 		UserDTO userDTO = this.modelMapper.map(user, UserDTO.class);
 		return userDTO;
+	}
+
+	@Override
+	public UserDTO registerNewUser(UserDTO userDto) {
+		User user = this.modelMapper.map(userDto, User.class);
+		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+		Role role = roleRepositories.findById(AppConstants.USER).get();
+		user.getRoles().add(role);
+		User newUser = userRepository.save(user); 
+		return this.modelMapper.map(newUser, UserDTO.class);
 	}
 }

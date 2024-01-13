@@ -22,15 +22,16 @@ import com.sourav.blog.payloads.CommentDTO;
 import com.sourav.blog.services.CommentService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class CommentController {
 
-	@Autowired
-	private CommentService commentService;
+	private final CommentService commentService;
 
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	@PostMapping("/post/{postId}/user/{userId}/comments")
 	public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO, @PathVariable Integer postId,
 			@PathVariable Integer userId) {
@@ -39,7 +40,7 @@ public class CommentController {
 		return new ResponseEntity<CommentDTO>(createComment, HttpStatus.CREATED);
 	}
 
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@DeleteMapping("/comments/{commentId}")
 	public ResponseEntity<ApiResponse> deleteComment(@PathVariable Integer commentId) {
 
@@ -52,7 +53,7 @@ public class CommentController {
 				HttpStatus.OK);
 	}
 
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@PutMapping("/{commentId}")
 	public ResponseEntity<CommentDTO> updateComment(@Valid @RequestBody CommentDTO commentDTO,
 			@PathVariable Integer commentId) {
@@ -62,7 +63,7 @@ public class CommentController {
 	}
 
 	// get all
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping("/")
 	public ResponseEntity<List<CommentDTO>> getAllComments() {
 		List<CommentDTO> commentDTOs = this.commentService.getAllComments();

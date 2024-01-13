@@ -7,6 +7,7 @@ import com.sourav.blog.payloads.UserDTO;
 public interface UserService {
 	
 	UserDTO createUser(UserDTO userDto);
+	UserDTO registerNewUser(UserDTO userDto);
 	UserDTO updateUser(UserDTO user, Integer userId);
 	UserDTO getUserById(Integer userId);
 	List<UserDTO> getAllUsers();

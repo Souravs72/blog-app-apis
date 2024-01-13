@@ -56,7 +56,8 @@ public class SecurityConfig {
 							authorize.anyRequest().authenticated();
 	        })      //  add .httpBasic(Customizer.withDefaults()) //and then stop
 	        .csrf(csrf -> {
-                csrf.ignoringRequestMatchers("/api/v1/auth/login");
+//                csrf.ignoringRequestMatchers("/api/v1/auth/login");
+	        	csrf.disable();
             })
 	        .authenticationProvider(authenticationProvider())
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
