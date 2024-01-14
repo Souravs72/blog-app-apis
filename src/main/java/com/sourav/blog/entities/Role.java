@@ -10,6 +10,5 @@ public class Role {
 	
 	@Id
 	private Integer id;
-	
 	private String name;    
 }

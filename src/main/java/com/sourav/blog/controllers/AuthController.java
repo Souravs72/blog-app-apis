@@ -1,9 +1,6 @@
 package com.sourav.blog.controllers;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatus; 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,15 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.sourav.blog.exceptions.ApiException;
-import com.sourav.blog.payloads.ApiResponse;
 import com.sourav.blog.payloads.UserDTO;
 import com.sourav.blog.services.UserService;
 import com.sourav.blog.token.JwtAuthRequest;
 import com.sourav.blog.token.JwtAuthResponse;
 import com.sourav.blog.token.JwtTokenHelper;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -58,14 +52,9 @@ public class AuthController {
 	}
 
 	@PostMapping("/signin")
-	public ResponseEntity<ApiResponse> registerToken(@RequestBody UserDTO userDTO) throws Exception {
+	public ResponseEntity<UserDTO> registerToken(@RequestBody UserDTO userDTO) throws Exception {
 
-		this.userService.registerNewUser(userDTO);
-		String pattern = "MM-dd-yyyy HH:mm:ss";
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-		String date = simpleDateFormat.format(new Date());
-
-		return new ResponseEntity<ApiResponse>(new ApiResponse("User has been created successfully.", true, date),
-				HttpStatus.OK);
+		UserDTO registeredUser = this.userService.registerNewUser(userDTO);
+		return new ResponseEntity<UserDTO>(registeredUser, HttpStatus.OK);
 	}
 }
