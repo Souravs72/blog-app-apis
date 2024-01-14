@@ -1,20 +1,10 @@
 package com.sourav.blog.config;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.modelmapper.ModelMapper;
+import java.util.List;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import com.sourav.blog.entities.Role;
-import com.sourav.blog.entities.User;
-import com.sourav.blog.payloads.UserDTO;
-import com.sourav.blog.repositories.UserRepository;
-import com.sourav.blog.services.UserService;
-
+import com.sourav.blog.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,28 +13,32 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SeedDataConfig implements CommandLineRunner {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     @Override
     public void run(String... args) throws Exception {
-    	Set<Role> roles = new HashSet<>();
-    	Role role = new Role();
-    	role.setName("ROLE_ADMIN");
-    	roles.add(role);
     	
-        if (userRepository.count() == 0) {
-
-            User admin = new User();
-            admin.setName("Sourav Singh");
-            admin.setEmail("sourav@gmail.com");
-            admin.setPassword(passwordEncoder.encode("password"));
-            admin.setAbout("Admin User");
-            admin.setRoles(roles);
-                    
-            this.userRepository.save(admin);
-            log.debug("created ADMIN user - {}", admin);
-        }
+    	if(roleRepository.count() == 0) {
+    		try {
+    			Role adminRole = new Role();
+    			adminRole.setId(AppConstants.ADMIN_USER);
+    			adminRole.setName("ROLE_ADMIN");
+    			
+    			Role userRole = new Role();
+    			userRole.setId(AppConstants.NORMAL_USER);
+    			userRole.setName("ROLE_NORMAL");
+    			
+    			Role managerRole = new Role();
+    			managerRole.setId(AppConstants.MANAGER_USER);
+    			managerRole.setName("ROLE_MANAGER");
+    			
+    			List<Role> roles = List.of(adminRole, userRole, managerRole);
+    			this.roleRepository.saveAll(roles);
+    			log.debug("created Roles - {}", adminRole, userRole, managerRole);
+    		}
+	    	catch (Exception e) {
+	    		log.debug("Error while creating Roles - {}");
+			}
+    	}
     }
-
 }

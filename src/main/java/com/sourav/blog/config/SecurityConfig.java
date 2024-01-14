@@ -1,6 +1,6 @@
-package com.sourav.blog.security;
+package com.sourav.blog.config;
 
-import org.springframework.context.annotation.Bean; 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,7 +20,6 @@ import com.sourav.blog.services.impl.UserDetailsServiceImpl;
 import com.sourav.blog.token.JwtAuthenticationEntryPoint;
 import com.sourav.blog.token.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
-
 
 @Configuration
 @EnableWebSecurity
@@ -47,20 +46,19 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http	
-			.exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-	        .sessionManagement(session -> session
-	                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-	        .authorizeHttpRequests(authorize -> {authorize
-							.requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll();
-							authorize.anyRequest().authenticated();
-	        })      //  add .httpBasic(Customizer.withDefaults()) //and then stop
-	        .csrf(csrf -> {
+		http.exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authorizeHttpRequests(authorize -> {
+					authorize
+						.requestMatchers(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/signin").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
+						.anyRequest().authenticated();
+				}) // add .httpBasic(Customizer.withDefaults()) //and then stop
+				.csrf(csrf -> {
 //                csrf.ignoringRequestMatchers("/api/v1/auth/login");
-	        	csrf.disable();
-            })
-	        .authenticationProvider(authenticationProvider())
-			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+					csrf.disable();
+				}).authenticationProvider(authenticationProvider())
+				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}

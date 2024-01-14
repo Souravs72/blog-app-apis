@@ -1,18 +1,15 @@
 package com.sourav.blog.services.impl;
 
-import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat; 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import com.sourav.blog.entities.Category;
 import com.sourav.blog.entities.Post;
 import com.sourav.blog.entities.User;
@@ -23,21 +20,16 @@ import com.sourav.blog.repositories.CategoryRepository;
 import com.sourav.blog.repositories.PostRepository;
 import com.sourav.blog.repositories.UserRepository;
 import com.sourav.blog.services.PostService;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
-	@Autowired
-	private PostRepository postRepository;
-	
-	@Autowired
-	private ModelMapper modelMapper;
-	
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
-	private CategoryRepository categoryRepository;
+	private final PostRepository postRepository;
+	private final ModelMapper modelMapper;
+	private final UserRepository userRepository;
+	private final CategoryRepository categoryRepository;
 
 	String pattern = "MM-dd-yyyy HH:mm:ss";
 	SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
