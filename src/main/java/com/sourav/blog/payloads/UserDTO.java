@@ -1,12 +1,8 @@
 package com.sourav.blog.payloads;
  
-import java.util.HashSet;
+import java.util.HashSet; 
 import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sourav.blog.entities.Role;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
