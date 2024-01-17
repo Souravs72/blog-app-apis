@@ -1,6 +1,6 @@
 package com.sourav.blog.controllers;
 
-import java.text.SimpleDateFormat; 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sourav.blog.payloads.ApiResponse;
 import com.sourav.blog.payloads.UserDTO;
 import com.sourav.blog.services.UserService;
-
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,22 +39,12 @@ public class UserController {
 
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	@GetMapping("/{userId}")
-	@Operation(
-			description = "Get endpoint to return particular user", 
-			summary = "This returns all the User(ADMIN, NORMAL, MANAGER)",
-			responses = {
-					@io.swagger.v3.oas.annotations.responses.ApiResponse(
-							responseCode = "200", description = "Success"
-					),
-					@io.swagger.v3.oas.annotations.responses.ApiResponse(
-							responseCode = "401", description = "Unauthorized"
-					),
-					@io.swagger.v3.oas.annotations.responses.ApiResponse(
-							responseCode = "404", description = "Not Found"
-					),
-					
-			}
-		)
+	@Operation(description = "Get endpoint to return particular user", summary = "This returns all the User(ADMIN, NORMAL, MANAGER)", responses = {
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success"),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized"),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Not Found"),
+
+	})
 	public ResponseEntity<UserDTO> getUser(@PathVariable Integer userId) {
 
 		return ResponseEntity.ok(this.userService.getUserById(userId));
