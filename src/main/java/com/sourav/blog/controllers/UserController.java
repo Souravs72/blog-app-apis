@@ -32,6 +32,11 @@ public class UserController {
 
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	@GetMapping("/")
+	@Operation(description = "Get endpoint to return particular user", summary = "This returns all the Users (ADMIN, NORMAL, MANAGER)", responses = {
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success"),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized"),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Not Found"),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Forbidden") })
 	public ResponseEntity<List<UserDTO>> getAllUsers() {
 
 		return ResponseEntity.ok(this.userService.getAllUsers());
@@ -39,12 +44,11 @@ public class UserController {
 
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	@GetMapping("/{userId}")
-	@Operation(description = "Get endpoint to return particular user", summary = "This returns all the User(ADMIN, NORMAL, MANAGER)", responses = {
+	@Operation(description = "Get endpoint to return particular user", summary = "This returns the User(ADMIN, NORMAL, MANAGER) with the particular id", responses = {
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success"),
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized"),
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Not Found"),
-
-	})
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Forbidden") })
 	public ResponseEntity<UserDTO> getUser(@PathVariable Integer userId) {
 
 		return ResponseEntity.ok(this.userService.getUserById(userId));

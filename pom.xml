@@ -119,6 +119,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>blog-app</finalName>
 	</build>
-
 </project>
